@@ -14,15 +14,30 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from testapi import views  # 导入 testapi 中的视图函数
+from rest_framework import routers
+from django.conf.urls.static import static
+from ads.views import homepage_ads
+from ads import views  # 引入 ads 应用中的视图
+
+# 创建路由
+router = routers.DefaultRouter()
+router.register(r'ads', views.AdViewSet)  # 为 ads API 注册视图集
 
 urlpatterns = [
-    path('api/your-endpoint', include('api.urls')),  # 添加 API 路由
+    path('admin/', admin.site.urls),  # Django 管理后台
     path('api/testapi/', include('testapi.urls')),  # 引入 testapi 的路由
+    path('api/ads/', include(router.urls)),      #引入 ads 的路由
+    path('api/ads/homepage/', homepage_ads, name='homepage-ads'),  # 定义获取首页广告的路由
+
 ]
+
+# 关键部分：让 Django 处理 media 文件
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 
 

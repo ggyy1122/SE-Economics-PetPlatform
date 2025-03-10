@@ -1,6 +1,11 @@
-<template>
+<!--
+  2025-3-7:主页的商城模块
+  -->
+  <template>
     <div>
+      
       <h2>精选内容</h2>
+      <AdCarousel />  <!--2025-3-9:在精选内容上方加入广告轮播 -->
       <div class="product-list">
         <div v-for="product in products" :key="product.id" class="product">
           <img :src="product.image" :alt="product.name" />
@@ -12,7 +17,11 @@
   </template>
   
   <script>
+  import AdCarousel from '@/components/AdCarousel.vue'; 
   export default {
+    components: {
+    AdCarousel
+  },
     data() {
       return {
         products: [

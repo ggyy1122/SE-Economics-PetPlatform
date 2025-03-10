@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+# settings.py
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +31,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+###广告
+import os
+# 图片文件的存储路径
+MEDIA_URL = '/media/'  # 访问图片的 URL
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 图片存储的本地路径
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     ##自己创建的api
    'testapi',  # 添加这一行
+    'ads'
 ]
 
 MIDDLEWARE = [
