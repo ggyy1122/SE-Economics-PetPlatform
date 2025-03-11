@@ -3,8 +3,10 @@
     <h2>精选内容</h2>
     <div class="product-list">
       <div v-for="product in products" :key="product.id" class="product">
-        <img :src="product.image" :alt="product.name" />
-        <h3>{{ product.name }}</h3>
+        <router-link :to="'/product/' + product.id">
+          <img :src="product.image" :alt="product.name" />
+          <h3>{{ product.name }}</h3>
+        </router-link>
         <p class="price">价格: ￥{{ product.price }}</p>
         <p class="stock">库存: {{ product.stock }}</p>
       </div>

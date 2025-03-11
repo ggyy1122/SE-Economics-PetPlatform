@@ -1,17 +1,11 @@
 <template>
-  <div id="app">
-    <!-- 渲染 HomePage 组件 -->
-    <HomePage />
+  <div>
+    <router-view /> <!-- 这个是用来显示动态加载的页面，比如 HomePage.vue -->
   </div>
 </template>
 
 <script>
-// 导入 HomePage 组件
-import HomePage from "./views/HomePage.vue";
-
 export default {
-  components: {
-    HomePage, // 注册 HomePage 组件
-  },
+  name: "App"
 };
 </script>
