@@ -69,20 +69,23 @@ export default {
 <style scoped>
 .ad-carousel {
   width: 100%;
-  height: 900px; /* 控制容器的高度 */
+  height: 400px; /* 根据需求设置高度 */
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px; /* 广告和商品之间的间距 */
 }
+
 .carousel-container {
   width: 100%;
   display: flex;
   justify-content: center;
 }
+
 .ad-image {
   width: 100%;
-  height: 100%; /* 使图片纵向填充容器 */
+  height: 100%;
   object-fit: cover; /* 保证图片填满容器，且按比例压缩 */
 }
 </style>

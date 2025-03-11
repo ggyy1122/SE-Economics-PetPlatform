@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/testapi/', include('testapi.urls')),  # 引入 testapi 的路由
     path('api/ads/', include(router.urls)),      #引入 ads 的路由
     path('api/ads/homepage/', homepage_ads, name='homepage-ads'),  # 定义获取首页广告的路由
+    path('api/', include('products.urls')),  # 包含 products 应用的路由
 
 ]
 
