@@ -3,10 +3,11 @@
     <h2>精选内容</h2>
     <div class="product-list">
       <div v-for="product in products" :key="product.id" class="product">
-        <router-link :to="'/product/' + product.id">
+        <!-- 改用 @click 事件，在新标签页打开商品详情 -->
+        <div @click="openProductPage(product.id)" style="cursor: pointer">
           <img :src="product.image" :alt="product.name" />
           <h3>{{ product.name }}</h3>
-        </router-link>
+        </div>
         <p class="price">价格: ￥{{ product.price }}</p>
         <p class="stock">库存: {{ product.stock }}</p>
       </div>
@@ -15,12 +16,12 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      products: []
+      products: [], // 存储商品列表
     };
   },
   mounted() {
@@ -29,13 +30,17 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/products/');
-        this.products = response.data;
+        const response = await axios.get("http://127.0.0.1:8000/api/products/");
+        this.products = response.data; // 获取商品数据
       } catch (error) {
-        console.error('获取商品失败:', error);
+        console.error("获取商品失败:", error);
       }
-    }
-  }
+    },
+    openProductPage(productId) {
+      // 在新标签页打开商品详情页
+      window.open(`/product/${productId}`, "_blank");
+    },
+  },
 };
 </script>
 
