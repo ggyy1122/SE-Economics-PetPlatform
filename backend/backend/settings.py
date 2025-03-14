@@ -52,6 +52,7 @@ INSTALLED_APPS = [
    'testapi',  # 添加这一行
     'ads',
     'products',
+     'person',
 ]
 
 MIDDLEWARE = [
@@ -63,13 +64,36 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+
 ]
 
+
+
+
+
+SESSION_COOKIE_SAMESITE = 'None'  # 允许跨站点的 Cookie
+SESSION_COOKIE_SECURE = True  # 如果使用 HTTPS，设置为 True
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True  # 允许携带 cookie
 # 允许跨域请求的来源地址
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # Vue 前端运行的地址（Vue CLI 默认端口）
+    "http://127.0.0.1:8000",  # 前端的地址
+    "http://127.0.0.1:8080",  # 前端的地址
 ]
-
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-requested-with",
+    "accept",
+    "origin",
+    "user-agent",
+    "x-csrftoken"
+]
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]  # 允许的请求方法
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -148,5 +172,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+
     ],
 }

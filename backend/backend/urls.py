@@ -32,13 +32,10 @@ urlpatterns = [
     path('api/ads/', include(router.urls)),      #引入 ads 的路由
     path('api/ads/homepage/', homepage_ads, name='homepage-ads'),  # 定义获取首页广告的路由
     path('api/', include('products.urls')),  # 包含 products 应用的路由
+    path('api/person/', include('person.urls')),
 
 ]
 
 # 关键部分：让 Django 处理 media 文件
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-
-
