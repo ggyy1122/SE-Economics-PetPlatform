@@ -20,8 +20,9 @@
           credentials: "include",
         })
           .then(() => {
-            this.$emit("update-login", false); 
-            this.$router.push("/login"); // 退出后跳转到登录页面
+            alert("退出成功");
+            window.location.href = "/";
+            this.$store.dispatch("checkLoginStatus");
           })
           .catch(error => console.error("退出失败", error));
       }
