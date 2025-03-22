@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/ads/homepage/', homepage_ads, name='homepage-ads'),  # 定义获取首页广告的路由
     path('api/', include('products.urls')),  # 包含 products 应用的路由
     path('api/person/', include('person.urls')),
+    path('api/favorites/', include('favorites.urls')),  # 包含 favorites 应用的路由
 
 ]
 
