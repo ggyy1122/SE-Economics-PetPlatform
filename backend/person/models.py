@@ -1,6 +1,7 @@
-from django.db import models
-from django.contrib.auth.hashers import make_password, check_password
 
+from django.db import models
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password, check_password
 class Person(models.Model):
     name = models.CharField(max_length=150, unique=True)  # 用户名，唯一
     password = models.CharField(max_length=128)  # 存储加密后的密码

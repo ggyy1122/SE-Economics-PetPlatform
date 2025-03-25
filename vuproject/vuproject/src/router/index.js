@@ -7,6 +7,7 @@ import TransactionsSection from '@/views/TransactionsSection.vue';
 import FundsSection from '@/views/FundsSection.vue';
 import MessagesSection from '@/views/MessageSection.vue';
 import SettingsSection from '@/views/SettingsSection.vue';
+import CartPage from "@/views/CartPage.vue";
 
 const routes = [
   { path: '/', component: HomePage },
@@ -22,6 +23,7 @@ const routes = [
       { path: 'funds', component: FundsSection },
       { path: 'messages', component: MessagesSection },
       { path: 'settings', component: SettingsSection },
+      { path: 'cart', component: CartPage },//个人购物车展示
     ],
   },
 ];

@@ -52,12 +52,13 @@ INSTALLED_APPS = [
    'testapi',  # 添加这一行
     'ads',
     'products',
-     'person',
-'favorites'
+    'person',
+    'favorites',
+    'cart',
 ]
 
 MIDDLEWARE = [
-'corsheaders.middleware.CorsMiddleware',  # 添加这一行
+    'corsheaders.middleware.CorsMiddleware',  # 添加这一行
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
