@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import User
 
 class Person(models.Model):
     name = models.CharField(max_length=150, unique=True)  # 用户名，唯一
