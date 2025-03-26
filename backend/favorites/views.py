@@ -85,3 +85,27 @@ def checkFavoriteStatus(request):
         return Response({"is_favorited": is_favorited}, status=status.HTTP_200_OK)
     except (Person.DoesNotExist, Product.DoesNotExist):
         return Response({"error": "用户或商品不存在"}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def getAllFavorites(request):
+    """获取用户的所有收藏商品"""
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return Response({"error": "用户未登录"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        user = Person.objects.get(id=user_id)
+        # 获取当前用户的所有收藏商品
+        favorites = Favorite.objects.filter(user=user).select_related("product")
+        favorite_products = [{
+            "id": favorite.product.id,
+            "name": favorite.product.name,
+            "description": favorite.product.description,  # 商品描述
+            "stock": favorite.product.stock,  # 商品库存
+            "price": favorite.product.price,
+            "image": f"http://127.0.0.1:8000/media/{favorite.product.image}"  # 完整的图片 URL
+        } for favorite in favorites]
+
+        return Response(favorite_products, status=status.HTTP_200_OK)
+    except Person.DoesNotExist:
+        return Response({"error": "用户不存在"}, status=status.HTTP_400_BAD_REQUEST)
