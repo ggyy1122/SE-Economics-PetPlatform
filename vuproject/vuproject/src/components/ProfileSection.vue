@@ -17,7 +17,6 @@
       <router-link to="/dashboard/funds">资金管理</router-link>
       <router-link to="/dashboard/messages">消息管理</router-link>
       <router-link to="/dashboard/settings">个人设置</router-link>
-      <router-link to="/dashboard/cart">个人购物车</router-link>
     </nav>
 
     <!-- 右侧内容区域 -->

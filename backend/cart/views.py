@@ -65,57 +65,74 @@ def get_all_carts(request):
 @api_view(["POST"])
 def add_to_cart(request, product_id):
     """添加商品到购物车"""
-    user = get_object_or_404(Person, name="userabcd")  # 固定为 "userabcd" 用户
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return JsonResponse({'error': '用户未登录'}, status=401)
+
+    user = get_object_or_404(Person, id=user_id)  # 获取当前用户
     product = get_object_or_404(Product, id=product_id)
+
     cart, _ = Cart.objects.get_or_create(user=user)
-    # 查找是否已有该商品在购物车中
+
+    # 查找购物车中是否已有该商品
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
     if not created:
-        # 如果已存在，增加数量
-        cart_item.quantity += 1
+        cart_item.quantity += 1  # 如果已存在，增加数量
     else:
         cart_item.quantity = 1  # 新增商品，数量为 1
     cart_item.save()
+
     return JsonResponse({
         'message': '商品已加入购物车',
         'product': product.name,
         'quantity': cart_item.quantity
     })
 
+
 @api_view(["POST"])
 def update_cart_item(request, product_id):
     """更新购物车中商品的数量"""
-    user = get_object_or_404(Person, name="userabcd")  # 固定为 "userabcd" 用户
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return JsonResponse({'error': '用户未登录'}, status=401)
+
+    user = get_object_or_404(Person, id=user_id)  # 当前用户
     product = get_object_or_404(Product, id=product_id)
-    cart, _ = Cart.objects.get_or_create(user=user)
+    cart = get_object_or_404(Cart, user=user)
+
     cart_item = get_object_or_404(CartItem, cart=cart, product=product)
+
     new_quantity = request.data.get('quantity')
-    if new_quantity is not None and new_quantity > 0:
-        cart_item.quantity = new_quantity
+    if new_quantity is not None and int(new_quantity) > 0:
+        cart_item.quantity = int(new_quantity)
         cart_item.save()
         return JsonResponse({
             'message': '购物车商品数量更新成功',
             'product': product.name,
             'quantity': cart_item.quantity
         })
-    return JsonResponse({'error': '无效的商品数量'}, status=status.HTTP_400_BAD_REQUEST)
+
+    return JsonResponse({'error': '无效的商品数量'}, status=400)
+
 
 @api_view(["POST"])
 def remove_from_cart(request, product_id):
     """从购物车移除商品"""
-    # 获取固定用户 "userabcd"
-    user = get_object_or_404(Person, name="userabcd")
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return JsonResponse({'error': '用户未登录'}, status=401)
+
+    user = get_object_or_404(Person, id=user_id)
     product = get_object_or_404(Product, id=product_id)
 
-    # 获取购物车，若无则返回错误
     cart = get_object_or_404(Cart, user=user)
 
-    # 查找购物车中该商品
     try:
         cart_item = CartItem.objects.get(cart=cart, product=product)
     except CartItem.DoesNotExist:
         return JsonResponse({'message': '购物车中无此商品'}, status=404)
-    # 如果数量大于1，减少数量；否则删除该商品
+
+    # 数量大于1，减少数量，否则删除商品
     if cart_item.quantity > 1:
         cart_item.quantity -= 1
         cart_item.save()

@@ -3,8 +3,15 @@
     <div class="product-info">
       <!-- 商品图片部分 -->
       <div class="product-image">
-        <img :src="product.image" :alt="product.name" v-if="product.image" />
-        <div v-else class="placeholder">图片加载失败</div>
+        <img
+          :src="product.image"
+          :alt="product.name"
+          v-if="product.image"
+        />
+        <div
+          v-else
+          class="placeholder"
+        >图片加载失败</div>
       </div>
 
       <!-- 商品详情部分 -->
@@ -15,14 +22,17 @@
         <p class="description">{{ product.description }}</p>
         <div class="button-group">
           <button class="buy-button">立即购买</button>
-          <button class="order-button" @click="addToCart(product.id)">加入购物车</button>
-            <!-- 收藏按钮 -->
-            <button 
-                   class="favorite-button"
-                      :class="{ active: isFavorite }"
-                          @click="toggleFavorite"
->               {{ isFavorite ? '已收藏' : '收藏' }}
-</button>
+          <button
+            class="order-button"
+            @click="addToCart(product.id)"
+          >加入购物车</button>
+          <!-- 收藏按钮 -->
+          <button
+            class="favorite-button"
+            :class="{ active: isFavorite }"
+            @click="toggleFavorite"
+          > {{ isFavorite ? '已收藏' : '收藏' }}
+          </button>
         </div>
       </div>
     </div>
@@ -61,7 +71,9 @@ export default {
   methods: {
     async fetchProductDetails(id) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/products/${id}/`);
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/products/${id}/`
+        );
         this.product = response.data;
       } catch (error) {
         console.error("获取商品详情失败:", error);
@@ -70,7 +82,10 @@ export default {
 
     async checkFavoriteStatus(productId) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/favorites/check_status/?product_id=${productId}`, { withCredentials: true });
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/favorites/check_status/?product_id=${productId}`,
+          { withCredentials: true }
+        );
         console.log("后端返回收藏状态：", response.data);
 
         if (response.data && response.data.is_favorited !== undefined) {
@@ -89,7 +104,11 @@ export default {
           ? "http://127.0.0.1:8000/api/favorites/remove/"
           : "http://127.0.0.1:8000/api/favorites/add/";
 
-        await axios.post(url, { product_id: this.product.id }, { withCredentials: true });
+        await axios.post(
+          url,
+          { product_id: this.product.id },
+          { withCredentials: true }
+        );
 
         this.isFavorite = !this.isFavorite; // 更新 UI 状态
       } catch (error) {
@@ -100,14 +119,18 @@ export default {
     // 添加到购物车方法
     async addToCart(productId) {
       try {
-        const response = await axios.post(`http://127.0.0.1:8000/api/cart/add/${productId}/`, { quantity: 1 }, { withCredentials: true });
+        const response = await axios.post(
+          `http://127.0.0.1:8000/api/cart/add/${productId}/`,
+          { quantity: 1 },
+          { withCredentials: true }
+        );
         console.log("商品已添加到购物车:", response.data);
         alert("商品已添加到购物车！");
       } catch (error) {
         console.error("添加商品到购物车失败:", error);
         alert("添加商品到购物车失败！");
       }
-    }
+    },
   },
 };
 </script>
@@ -176,7 +199,8 @@ export default {
   gap: 10px;
 }
 
-.buy-button, .order-button {
+.buy-button,
+.order-button {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -194,7 +218,8 @@ export default {
   color: white;
 }
 
-.buy-button:hover, .order-button:hover {
+.buy-button:hover,
+.order-button:hover {
   opacity: 0.9;
 }
 
