@@ -19,7 +19,11 @@ from person.models import Person
 
 # 获取指定用户的购物车数据（假设 userabcd 登录）
 def get_user_cart(request):
-    user = get_object_or_404(Person, name="userabcd")  # 固定用户
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return JsonResponse({'error': '用户未登录'}, status=401)
+
+    user = get_object_or_404(Person, id=user_id)  # 获取当前用户
     cart, _ = Cart.objects.get_or_create(user=user)
     cart_items = cart.items.all()
 
