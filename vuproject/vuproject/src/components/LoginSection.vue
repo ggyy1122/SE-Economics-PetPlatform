@@ -1,6 +1,3 @@
-<!-- 2025-3-12: 登录弹窗
-      2025-3-13: 登录弹窗
-  -->
 <template>
   <div v-if="isVisible" class="popup-overlay">
     <div class="popup">
@@ -34,30 +31,43 @@
         <div v-else class="loader"></div>
       </button>
 
-      <p class="toggle-text" @click="isRegister = !isRegister">
+      <p class="toggle-text" @click="toggleMode">
         {{ isRegister ? "已有账号？马上登录" : "没有账号？快速注册" }}
       </p>
     </div>
   </div>
 </template>
 
-
-
 <script>
 export default {
-
-  props: ['isVisible'],
+  props: {
+    isVisible: Boolean,
+    initialMode: {
+      type: String,
+      default: 'login',
+      validator: value => ['login', 'register'].includes(value)
+    }
+  },
   data() {
     return {
-      isRegister: false, // 控制是注册还是登录
-      username: "", // 用户名
-      password: "", // 密码
-      processing: false // 防止重复提交
+      isRegister: this.initialMode === 'register',
+      username: "",
+      password: "",
+      processing: false
     };
+  },
+  watch: {
+    initialMode(newVal) {
+      this.isRegister = newVal === 'register';
+    }
   },
   methods: {
     closePopup() {
       this.$emit('close');
+    },
+    toggleMode() {
+      this.isRegister = !this.isRegister;
+      this.$emit('toggle-mode', this.isRegister ? 'register' : 'login');
     },
     async submit() {
       this.processing = true;
@@ -65,16 +75,15 @@ export default {
         const url = this.isRegister 
           ? "http://127.0.0.1:8000/api/person/register/" 
           : "http://127.0.0.1:8000/api/person/login/";
-
-          const response = await fetch(url, {
-              method: "POST",
-             headers: { "Content-Type": "application/json" },
-              credentials: "include",  // 关键：让浏览器携带 cookie
-              body: JSON.stringify({ 
-               name: this.username, 
-             password: this.password 
-  }),
-});
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ 
+            name: this.username, 
+            password: this.password 
+          }),
+        });
 
         const data = await response.json();
         
@@ -95,16 +104,8 @@ export default {
 };
 </script>
 
-
 <style scoped>
-/* 基础样式 */
-:root {
-  --primary-color: #409EFF;
-  --success-color: #67C23A;
-  --danger-color: #F56C6C;
-  --text-color: #606266;
-}
-
+/* 原有样式保持不变 */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -147,7 +148,6 @@ h2 {
   width: 80%;
 }
 
-/* 输入框样式 */
 .form-group {
   margin: 25px 25px;
 }
@@ -167,7 +167,6 @@ h2 {
   box-shadow: 0 0 8px rgba(64, 158, 255, 0.2);
 }
 
-/* 按钮样式 */
 .submit-btn {
   width: 100%;
   padding: 12px;
@@ -190,7 +189,6 @@ h2 {
   cursor: not-allowed;
 }
 
-/* 关闭按钮 */
 .close-btn {
   position: absolute;
   top: 15px;
@@ -210,7 +208,6 @@ h2 {
   transform: rotate(90deg);
 }
 
-/* 切换文字 */
 .toggle-text {
   color: var(--text-color);
   font-size: 14px;
@@ -224,7 +221,6 @@ h2 {
   text-decoration: underline;
 }
 
-/* 加载动画 */
 .loader {
   width: 20px;
   height: 20px;
