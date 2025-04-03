@@ -1,9 +1,82 @@
 <template>
   <div>
-    <h2>精选内容</h2>
+    <!-- 火爆商品区域 (保持不变) -->
+    <h2>🔥 火爆商品</h2>
     <div class="product-list">
-      <div v-for="product in products" :key="product.id" class="product">
-        <!-- 改用 @click 事件，在新标签页打开商品详情 -->
+      <div v-for="product in hotProducts" :key="product.id" class="product">
+        <div @click="openProductPage(product.id)" style="cursor: pointer">
+          <img :src="product.image" :alt="product.name" />
+          <h3>{{ product.name }}</h3>
+        </div>
+        <p class="price">价格: ￥{{ product.price }}</p>
+        <p class="stock">库存: {{ product.stock }}</p>
+      </div>
+    </div>
+
+    <!-- 修改后的狗狗商品区域 -->
+    <h2>🐶 狗狗商品</h2>
+    <div class="dog-category-nav">
+      <div 
+        v-for="category in dogCategories" 
+        :key="category.value"
+        class="nav-item"
+        :class="{ active: activeDogCategory === category.value }"
+        @mouseenter="filterDogProducts(category.value)"
+      >
+        {{ category.label }}
+      </div>
+    </div>
+    <div class="product-list">
+      <div v-for="product in filteredDogProducts" :key="product.id" class="product">
+        <div @click="openProductPage(product.id)" style="cursor: pointer">
+          <img :src="product.image" :alt="product.name" />
+          <h3>{{ product.name }}</h3>
+        </div>
+        <p class="price">价格: ￥{{ product.price }}</p>
+        <p class="stock">库存: {{ product.stock }}</p>
+      </div>
+    </div>
+
+    <!-- 以下所有其他区域保持不变 -->
+    <h2>🐱 猫猫商品</h2>
+    <div class="product-list">
+      <div v-for="product in catProducts" :key="product.id" class="product">
+        <div @click="openProductPage(product.id)" style="cursor: pointer">
+          <img :src="product.image" :alt="product.name" />
+          <h3>{{ product.name }}</h3>
+        </div>
+        <p class="price">价格: ￥{{ product.price }}</p>
+        <p class="stock">库存: {{ product.stock }}</p>
+      </div>
+    </div>
+
+    <h2>🐹 小宠商品</h2>
+    <div class="product-list">
+      <div v-for="product in smallPetProducts" :key="product.id" class="product">
+        <div @click="openProductPage(product.id)" style="cursor: pointer">
+          <img :src="product.image" :alt="product.name" />
+          <h3>{{ product.name }}</h3>
+        </div>
+        <p class="price">价格: ￥{{ product.price }}</p>
+        <p class="stock">库存: {{ product.stock }}</p>
+      </div>
+    </div>
+
+    <h2>🐠 水族商品</h2>
+    <div class="product-list">
+      <div v-for="product in aquariumProducts" :key="product.id" class="product">
+        <div @click="openProductPage(product.id)" style="cursor: pointer">
+          <img :src="product.image" :alt="product.name" />
+          <h3>{{ product.name }}</h3>
+        </div>
+        <p class="price">价格: ￥{{ product.price }}</p>
+        <p class="stock">库存: {{ product.stock }}</p>
+      </div>
+    </div>
+
+    <h2>🦎 爬虫商品</h2>
+    <div class="product-list">
+      <div v-for="product in reptileProducts" :key="product.id" class="product">
         <div @click="openProductPage(product.id)" style="cursor: pointer">
           <img :src="product.image" :alt="product.name" />
           <h3>{{ product.name }}</h3>
@@ -21,55 +94,98 @@ import axios from "axios";
 export default {
   data() {
     return {
-      products: [], // 存储商品列表
+      hotProducts: [],
+      dogProducts: [], // 存储所有狗狗商品
+      filteredDogProducts: [], // 存储筛选后的狗狗商品
+      catProducts: [],
+      smallPetProducts: [],
+      aquariumProducts: [],
+      reptileProducts: [],
+      activeDogCategory: null, // 当前激活的狗狗分类
+      dogCategories: [ // 狗狗分类导航选项
+        { label: '主粮', value: '主粮' },
+        { label: '零食', value: '零食' },
+        { label: '玩具', value: '玩具' }
+      ]
     };
   },
   mounted() {
-    this.fetchProducts();
+    this.fetchAllProducts();
   },
   methods: {
-    async fetchProducts() {
+    async fetchAllProducts() {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/products/");
-        this.products = response.data; // 获取商品数据
+        // 火爆商品
+        const hotRes = await axios.get("http://127.0.0.1:8000/api/products/?limit=12");
+        this.hotProducts = hotRes.data.results || [];
+        
+        // 狗狗商品 - 获取所有狗狗商品
+        const dogRes = await axios.get("http://127.0.0.1:8000/api/products/?animals__name=狗");
+        this.dogProducts = dogRes.data.results || [];
+        this.filteredDogProducts = this.dogProducts; // 初始显示全部
+        
+        // 其他商品保持不变...
+        const catRes = await axios.get("http://127.0.0.1:8000/api/products/?animals__name=猫");
+        this.catProducts = catRes.data.results || [];
+        
+        this.smallPetProducts = [];
+        this.aquariumProducts = [];
+        this.reptileProducts = [];
+        
       } catch (error) {
-        console.error("获取商品失败:", error);
+        console.error("❌ 获取商品失败:", error);
+        // 错误处理保持不变...
       }
     },
-    openProductPage(productId) {
-      // 在新标签页打开商品详情页
-      window.open(`/product/${productId}`, "_blank");
+    
+    // 新增方法：筛选狗狗商品
+    async filterDogProducts(category) {
+      this.activeDogCategory = category;
+      try {
+        const res = await axios.get(`http://127.0.0.1:8000/api/products/?animals__name=狗&categories__name=${category}`);
+        this.filteredDogProducts = res.data.results || [];
+      } catch (error) {
+        console.error("筛选狗狗商品失败:", error);
+        this.filteredDogProducts = [];
+      }
     },
-  },
+    
+    openProductPage(productId) {
+      window.open(`/product/${productId}`, "_blank");
+    }
+  }
 };
 </script>
+
+<style scoped></style>
 
 <style scoped>
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 自适应布局，每个商品占一个宽度最小为200px */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
-  padding: 20px; /* 为产品列表添加内边距 */
+  padding: 20px;
+  min-height: 200px; /* 确保即使没有商品也有一定高度 */
 }
 
 .product {
-  background-color: #fff; /* 商品卡片背景色 */
-  border-radius: 10px; /* 圆角 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 15px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动画效果 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product:hover {
-  transform: translateY(-5px); /* 鼠标悬停时卡片上移 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 悬停时加深阴影 */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .product img {
   width: 100%;
-  height: 200px; /* 统一商品图片的高度 */
-  object-fit: cover; /* 确保图片填充区域，按比例缩放 */
+  height: 200px;
+  object-fit: cover;
   border-radius: 10px;
 }
 
@@ -82,11 +198,56 @@ export default {
 .product .price {
   font-size: 1.1em;
   font-weight: bold;
-  color: #f60; /* 价格颜色 */
+  color: #f60;
 }
 
 .product .stock {
   font-size: 0.9em;
-  color: #888; /* 库存颜色 */
+  color: #888;
+}
+
+h2 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  padding-left: 20px;
+  font-size: 1.5em;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* 空状态提示 */
+.product-list:empty::before {
+  content: "暂无商品，敬请期待";
+  display: block;
+  text-align: center;
+  color: #999;
+  padding: 50px 0;
+}
+
+/* 原有样式全部保留，只新增以下样式 */
+
+.dog-category-nav {
+  display: flex;
+  gap: 15px;
+  padding: 0 20px 15px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+
+.dog-category-nav .nav-item {
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.dog-category-nav .nav-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dog-category-nav .nav-item.active {
+  background-color: #ff6b00;
+  color: white;
 }
 </style>
