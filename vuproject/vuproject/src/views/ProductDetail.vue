@@ -1,7 +1,7 @@
 <template>
   <div class="product-detail">
+    <!-- 商品信息部分 -->
     <div class="product-info">
-      <!-- 商品图片部分 -->
       <div class="product-image">
         <img
           :src="product.image"
@@ -14,7 +14,6 @@
         >图片加载失败</div>
       </div>
 
-      <!-- 商品详情部分 -->
       <div class="product-description">
         <h1>{{ product.name }}</h1>
         <p class="price">价格: ￥{{ product.price }}</p>
@@ -26,7 +25,6 @@
             class="order-button"
             @click="addToCart(product.id)"
           >加入购物车</button>
-          <!-- 收藏按钮 -->
           <button
             class="favorite-button"
             :class="{ active: isFavorite }"
@@ -34,6 +32,24 @@
           > {{ isFavorite ? '已收藏' : '收藏' }}
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- 评论部分 -->
+    <div class="product-comments">
+      <h2>用户评论</h2>
+      <ul>
+        <li v-for="comment in comments" :key="comment.id">
+          <p><strong>用户 {{ comment.user }}:</strong></p>
+          <p>{{ comment.text }}</p>
+          <p class="comment-time">{{ new Date(comment.created_at).toLocaleString() }}</p>
+        </li>
+      </ul>
+
+      <!-- 添加评论部分 -->
+      <div class="add-comment">
+        <textarea v-model="newCommentText" placeholder="写下你的评论..." rows="4"></textarea>
+        <button @click="submitComment">提交评论</button>
       </div>
     </div>
   </div>
@@ -52,20 +68,22 @@ export default {
         stock: "",
         description: "",
       },
-      isFavorite: false, // 收藏状态
+      isFavorite: false, 
+      comments: [], 
+      newCommentText: "", // 用于存储用户输入的评论内容
     };
   },
   async mounted() {
     const productId = this.$route.params.id;
-    console.log("页面加载，获取商品 ID:", productId);
-    await this.fetchProductDetails(productId); // 确保数据先加载
-    await this.checkFavoriteStatus(productId); // 先查询收藏状态
-    console.log("初始收藏状态:", this.isFavorite);
+    await this.fetchProductDetails(productId); 
+    await this.checkFavoriteStatus(productId); 
+    await this.fetchComments(productId); 
   },
   watch: {
     "$route.params.id": async function (newId) {
       await this.fetchProductDetails(newId);
       await this.checkFavoriteStatus(newId);
+      await this.fetchComments(newId);
     },
   },
   methods: {
@@ -98,6 +116,39 @@ export default {
       }
     },
 
+    async fetchComments(productId) {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/comments/product/${productId}/`
+        );
+        this.comments = response.data;
+      } catch (error) {
+        console.error("获取评论失败:", error);
+      }
+    },
+
+    async submitComment() {
+      if (!this.newCommentText.trim()) {
+        alert("评论内容不能为空！");
+        return;
+      }
+
+      try {
+        const productId = this.$route.params.id;
+        const response = await axios.post(
+          `http://127.0.0.1:8000/api/comments/add/${productId}/`,
+          { text: this.newCommentText },
+          { withCredentials: true }
+        );
+        console.log("评论提交成功:", response.data);
+        this.comments.push(response.data); // 更新评论列表
+        this.newCommentText = ""; // 清空评论输入框
+      } catch (error) {
+        console.error("提交评论失败:", error);
+        alert("提交评论失败！");
+      }
+    },
+
     async toggleFavorite() {
       try {
         const url = this.isFavorite
@@ -110,13 +161,12 @@ export default {
           { withCredentials: true }
         );
 
-        this.isFavorite = !this.isFavorite; // 更新 UI 状态
+        this.isFavorite = !this.isFavorite;
       } catch (error) {
         console.error("收藏操作失败:", error);
       }
     },
 
-    // 添加到购物车方法
     async addToCart(productId) {
       try {
         const response = await axios.post(
@@ -135,9 +185,11 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .product-detail {
   display: flex;
+  flex-direction: column; /* 修改为纵向排列 */
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -150,6 +202,7 @@ export default {
   display: flex;
   max-width: 1000px;
   width: 100%;
+  margin-bottom: 20px; /* 加点间距让上下部分不紧挨 */
 }
 
 .product-image {
@@ -244,5 +297,30 @@ export default {
 .favorite-button:hover {
   transform: scale(1.05);
   filter: brightness(1.1);
+}
+
+.add-comment {
+  margin-top: 20px;
+}
+
+.add-comment textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.add-comment button {
+  padding: 10px 20px;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-comment button:hover {
+  background-color: #e43e00;
 }
 </style>
