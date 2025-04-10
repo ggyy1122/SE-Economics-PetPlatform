@@ -54,9 +54,10 @@ INSTALLED_APPS = [
     'ads',
     'products',
      'person',
-'favorites',
+    'favorites',
     'cart',
-    'comment'
+    'comment',
+    'posts'
 ]
 
 MIDDLEWARE = [
@@ -88,6 +89,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",  # 前端的地址
     "http://127.0.0.1:8080",  # 前端的地址
 ]
+
 CORS_ALLOW_HEADERS = [
     "content-type",
     "authorization",

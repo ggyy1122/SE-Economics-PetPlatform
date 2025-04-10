@@ -39,7 +39,10 @@
     <div class="product-comments">
       <h2>用户评论</h2>
       <ul>
-        <li v-for="comment in comments" :key="comment.id">
+        <li
+          v-for="comment in comments"
+          :key="comment.id"
+        >
           <p><strong>用户 {{ comment.user }}:</strong></p>
           <p>{{ comment.text }}</p>
           <p class="comment-time">{{ new Date(comment.created_at).toLocaleString() }}</p>
@@ -48,7 +51,11 @@
 
       <!-- 添加评论部分 -->
       <div class="add-comment">
-        <textarea v-model="newCommentText" placeholder="写下你的评论..." rows="4"></textarea>
+        <textarea
+          v-model="newCommentText"
+          placeholder="写下你的评论..."
+          rows="4"
+        ></textarea>
         <button @click="submitComment">提交评论</button>
       </div>
     </div>
@@ -68,16 +75,16 @@ export default {
         stock: "",
         description: "",
       },
-      isFavorite: false, 
-      comments: [], 
+      isFavorite: false,
+      comments: [],
       newCommentText: "", // 用于存储用户输入的评论内容
     };
   },
   async mounted() {
     const productId = this.$route.params.id;
-    await this.fetchProductDetails(productId); 
-    await this.checkFavoriteStatus(productId); 
-    await this.fetchComments(productId); 
+    await this.fetchProductDetails(productId);
+    await this.checkFavoriteStatus(productId);
+    await this.fetchComments(productId);
   },
   watch: {
     "$route.params.id": async function (newId) {
