@@ -18,7 +18,7 @@
       @toggle-mode="updateAuthMode"
     />
 
-    <ProfileSection v-if="selected === 'profile'" />
+
   </div>
 </template>
 
@@ -28,7 +28,7 @@ import AdCarousel from "@/components/AdCarousel.vue";
 import FeaturedSection from "@/components/FeaturedSection.vue";
 import CommunitySection from "@/components/CommunitySection.vue";
 import LoginPopup from "@/components/LoginSection.vue";
-import ProfileSection from "@/components/ProfileSection.vue";
+
 
 export default {
   components: {
@@ -37,7 +37,6 @@ export default {
     FeaturedSection,
     CommunitySection,
     LoginPopup,
-    ProfileSection,
   },
   data() {
     return {

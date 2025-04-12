@@ -1,7 +1,21 @@
 <template>
   <div>
     <!-- 火爆商品区域 (保持不变) -->
-    <h2>🔥 火爆商品</h2>
+    <!-- 商品标题和按钮一行 -->
+    <div
+  style="display: flex; align-items: center; margin-bottom: 10px;"
+>
+<h2 style="margin: 0; padding: 0; border: none;">🔥 火爆商品</h2>
+  <div style="flex-grow: 1;"></div> <!-- 占位让按钮往右 -->
+  <button
+    @click="goToAllCategory"
+    style="margin-right: 40px; padding: 8px 16px; background-color: #F95D0F; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;"
+  >
+    🛒 进入商城
+  </button>
+</div>
+
+
     <div class="product-list">
       <div v-for="product in hotProducts" :key="product.id" class="product">
         <div @click="openProductPage(product.id)" style="cursor: pointer">
@@ -14,28 +28,39 @@
     </div>
 
     <!-- 修改后的狗狗商品区域 -->
-    <h2>🐶 狗狗商品</h2>
-    <div class="dog-category-nav">
-      <div 
-        v-for="category in dogCategories" 
-        :key="category.value"
-        class="nav-item"
-        :class="{ active: activeDogCategory === category.value }"
-        @mouseenter="filterDogProducts(category.value)"
-      >
-        {{ category.label }}
-      </div>
+<div
+  style="display: flex; align-items: center; margin-bottom: 10px;"
+><h2 style="margin: 0; padding: 0; border: none;">🐶 狗狗商品</h2>
+  <div style="flex-grow: 1;"></div> <!-- 占位让按钮往右 -->
+  <button
+    @click="goToDogCategory"
+    style="margin-right: 40px; padding: 8px 16px; background-color: #F95D0F; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;"
+  >
+    🛒 狗狗商城
+  </button>
+</div>
+<div class="dog-category-nav">
+  <div 
+    v-for="category in dogCategories" 
+    :key="category.value"
+    class="nav-item"
+    :class="{ active: activeDogCategory === category.value }"
+    @mouseenter="filterDogProducts(category.value)"
+  >
+    {{ category.label }}
+  </div>
+</div>
+<div class="product-list">
+  <div v-for="product in filteredDogProducts.slice(0, 12)" :key="product.id" class="product">
+    <div @click="openProductPage(product.id)" style="cursor: pointer">
+      <img :src="product.image" :alt="product.name" />
+      <h3>{{ product.name }}</h3>
     </div>
-    <div class="product-list">
-      <div v-for="product in filteredDogProducts" :key="product.id" class="product">
-        <div @click="openProductPage(product.id)" style="cursor: pointer">
-          <img :src="product.image" :alt="product.name" />
-          <h3>{{ product.name }}</h3>
-        </div>
-        <p class="price">价格: ￥{{ product.price }}</p>
-        <p class="stock">库存: {{ product.stock }}</p>
-      </div>
-    </div>
+    <p class="price">价格: ￥{{ product.price }}</p>
+    <p class="stock">库存: {{ product.stock }}</p>
+  </div>
+</div>
+
 
     <!-- 以下所有其他区域保持不变 -->
     <h2>🐱 猫猫商品</h2>
@@ -113,6 +138,12 @@ export default {
     this.fetchAllProducts();
   },
   methods: {
+    goToAllCategory() {
+      window.open(this.$router.resolve({ name: 'all' }).href, '_blank');
+    },
+    goToDogCategory(){
+      window.open(this.$router.resolve({ name: 'dog' }).href, '_blank');
+    },
     async fetchAllProducts() {
       try {
         // 火爆商品

@@ -14,12 +14,13 @@
     <div class="nav-right">
       <ul>
         <li 
-          :class="{ active: selected === 'profile' }" 
-          v-if="isLoggedIn" 
-          @click="select('profile')"
-        >
-          我的
-        </li>
+  :class="{ active: selected === 'profile' }" 
+  v-if="isLoggedIn" 
+  @click="goToProfileDashBoard"
+>
+  我的
+</li>
+
         <template v-else>
           <li :class="{ active: selected === 'login' }" @click="select('login')">登录</li>
           <li :class="{ active: selected === 'register' }" @click="select('register')">注册</li>
@@ -42,6 +43,9 @@ export default {
     select(option) {
       this.$emit("update:selected", option);
     },
+  goToProfileDashBoard() {
+    window.open(this.$router.resolve("/dashboard/home").href, "_blank");
+  },
   },
   mounted() {
     this.$store.dispatch("checkLoginStatus");

@@ -2,8 +2,6 @@
   <div class="dashboard">
     <!-- 左侧导航栏 -->
     <nav class="sidebar">
-      <!-- 添加返回首页的按钮 -->
-      <router-link to="/">返回首页</router-link> <!-- 这是返回首页的链接 -->
       <router-link to="/dashboard/home">我的</router-link>
 
       <!-- 交易管理折叠项 -->

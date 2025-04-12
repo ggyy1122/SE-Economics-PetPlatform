@@ -11,7 +11,6 @@ import ShopOrders from '@/views/ShopOrders.vue';    // 引入商城订单组件
 import PostDetail from '../views/PostDetail.vue';
 import CreatePost from '@/views/CreatePost.vue';
 import Community from '@/components/CommunitySection.vue'; // 引入社区页面
-
 const routes = [
   { path: '/', name: 'HomePage', component: HomePage },
   { path: '/product/:id', component: ProductDetail, props: true },
@@ -31,6 +30,45 @@ const routes = [
       { path: 'settings', component: SettingsSection },
     ],
   },
+  {
+    path: '/category',
+    component: () => import('@/views/CategoryPage.vue'), // 导航栏 + router-view
+    children: [
+      {
+        path: 'all',
+        name: 'all',
+        component: () => import('@/views/categories/AllProducts.vue') // 这是实际展示全部商品的组件
+      },
+      {
+        path: 'dog',
+        name: 'dog',
+        component: () => import('@/views/categories/DogProducts.vue')
+      },
+      {
+        path: 'cat',
+        name: 'cat',
+        component: () => import('@/views/categories/CatProducts.vue')
+      },
+      {
+        path: 'small',
+        name: 'small',
+        component: () => import('@/views/categories/SmallProducts.vue') // 小宠商品展示
+      },
+      {
+        path: 'aquatic',
+        name: 'aquatic',
+        component: () => import('@/views/categories/AquaticProducts.vue') // 水族商品展示
+      },
+      {
+        path: 'reptile',
+        name: 'reptile',
+        component: () => import('@/views/categories/ReptileProducts.vue') // 爬虫商品展示
+      }
+      
+      // ...其他分类同理
+    ]
+  },
+  
 ];
 
 const router = createRouter({
