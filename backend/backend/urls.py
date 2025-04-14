@@ -37,7 +37,8 @@ urlpatterns = [
     path('api/cart/', include('cart.urls')),  # 引入 cart 应用的路由
     path('api/comments/', include('comment.urls')),  # 添加评论模块的路由
     path('api/posts/', include('posts.urls')),    # 添加社区帖子模块的路由
- ]
+    path('api/post_comment/', include('post_comment.urls')),  # 添加帖子评论区的路由
+]
 
 # 关键部分：让 Django 处理 media 文件
 if settings.DEBUG:

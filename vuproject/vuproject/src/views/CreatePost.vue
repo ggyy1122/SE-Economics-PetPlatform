@@ -53,8 +53,12 @@
         />
       </div>
 
-      <div class="form-group">
+      <div class="form-group button-group">
         <button @click="submitPost">提交帖子</button>
+        <button
+          class="cancel-btn"
+          @click="cancelPost"
+        >取消</button>
       </div>
     </div>
   </div>
@@ -119,7 +123,7 @@ export default {
           withCredentials: true,
         });
         alert("帖子提交成功！");
-        this.$router.push("/community"); // 成功后跳转回社区页
+        this.$router.push({ path: "/", query: { tab: "community" } });
       } catch (error) {
         console.error("提交帖子失败：", error);
         if (error.response?.data?.error) {
@@ -128,6 +132,9 @@ export default {
           alert("提交失败，请检查是否已登录或数据是否完整！");
         }
       }
+    },
+    cancelPost() {
+      this.$router.push("/community");
     },
   },
 };
@@ -159,8 +166,13 @@ select {
   border-radius: 5px;
 }
 
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
 button {
-  padding: 12px;
+  padding: 12px 20px;
   background-color: #007bff;
   border: none;
   color: white;
@@ -171,5 +183,13 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268;
 }
 </style>
