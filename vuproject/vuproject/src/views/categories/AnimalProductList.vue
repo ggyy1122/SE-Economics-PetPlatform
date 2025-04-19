@@ -1,15 +1,15 @@
 <template>
     <div class="category-page">
-      <h2>🐶 狗狗商品</h2>
+      <h2>{{ categoryName }} 商品</h2>
   
-      <!-- 狗狗子类导航 -->
-      <div class="dog-category-nav">
+      <!-- 子类导航 -->
+      <div class="category-nav">
         <div 
-          v-for="category in dogCategories" 
+          v-for="category in categories" 
           :key="category.value"
           class="nav-item"
-          :class="{ active: activeDogCategory === category.value }"
-          @mouseenter="filterDogProducts(category.value)"
+          :class="{ active: activeCategory === category.value }"
+          @mouseenter="filterProducts(category.value)"
         >
           {{ category.label }}
         </div>
@@ -18,9 +18,10 @@
       <!-- 商品展示 -->
       <div class="product-list">
         <div 
-          v-for="product in paginatedDogProducts[activeDogCategory]" 
+          v-for="product in paginatedProducts[activeCategory]" 
           :key="product.id" 
           class="product"
+          @click="openProductPage(product.id)"  
         >
           <img :src="product.image" :alt="product.name" />
           <h3>{{ product.name }}</h3>
@@ -29,15 +30,15 @@
       </div>
   
       <!-- 分页 -->
-      <div class="pagination" v-if="paginatedDogProducts[activeDogCategory]">
+      <div class="pagination" v-if="paginatedProducts[activeCategory]">
         <button 
-          @click="changePage(activeDogCategory, currentPage[activeDogCategory] - 1)" 
-          :disabled="currentPage[activeDogCategory] <= 1"
+          @click="changePage(activeCategory, currentPage[activeCategory] - 1)" 
+          :disabled="currentPage[activeCategory] <= 1"
         >上一页</button>
-        <span>第 {{ currentPage[activeDogCategory] }} 页</span>
+        <span>第 {{ currentPage[activeCategory] }} 页</span>
         <button 
-          @click="changePage(activeDogCategory, currentPage[activeDogCategory] + 1)" 
-          :disabled="currentPage[activeDogCategory] >= totalPages[activeDogCategory]"
+          @click="changePage(activeCategory, currentPage[activeCategory] + 1)" 
+          :disabled="currentPage[activeCategory] >= totalPages[activeCategory]"
         >下一页</button>
       </div>
     </div>
@@ -47,17 +48,23 @@
   import axios from 'axios';
   
   export default {
-    name: 'DogProducts',
+    name: 'CategoryPage',
+    props: {
+      categoryName: {
+        type: String,
+        required: true
+      }
+    },
     data() {
       return {
-        dogCategories: [
+        categories: [
           { label: '主粮', value: '主粮' },
           { label: '零食', value: '零食' },
           { label: '玩具', value: '玩具' }
         ],
-        activeDogCategory: '主粮', // 默认选择第一个分类
-        dogProducts: [],
-        filteredDogProducts: [],
+        activeCategory: '主粮', // 默认选择第一个分类
+        products: [],
+        filteredProducts: [],
         // 每个分类的分页状态
         currentPage: {
           '主粮': 1,
@@ -70,7 +77,7 @@
           '零食': 1,
           '玩具': 1
         },
-        paginatedDogProducts: {
+        paginatedProducts: {
           '主粮': [],
           '零食': [],
           '玩具': []
@@ -78,35 +85,39 @@
       };
     },
     mounted() {
-      this.fetchAllDogProducts();  // 加载初始商品数据
+      this.fetchProducts();  // 加载初始商品数据
     },
     methods: {
-      async fetchAllDogProducts() {
+      async fetchProducts() {
         try {
-          const res = await axios.get('http://127.0.0.1:8000/api/products/?animals__name=狗');
-          this.dogProducts = res.data.results || [];
-          this.filteredDogProducts = this.dogProducts;
-          this.filterDogProducts(this.activeDogCategory); // 初始化分类商品
+          const res = await axios.get(`http://127.0.0.1:8000/api/products/?animals__name=${this.categoryName}`);
+          this.products = res.data.results || [];
+          this.filteredProducts = this.products;
+          this.filterProducts(this.activeCategory); // 初始化分类商品
         } catch (err) {
-          console.error('获取狗狗商品失败', err);
+          console.error(`获取 ${this.categoryName} 商品失败`, err);
         }
       },
-      async filterDogProducts(category) {
-        this.activeDogCategory = category;
+      // 打开商品详情页
+      openProductPage(productId) {
+        window.open(`/product/${productId}`, "_blank");
+      },
+      async filterProducts(category) {
+        this.activeCategory = category;
         try {
-          const res = await axios.get(`http://127.0.0.1:8000/api/products/?animals__name=狗&categories__name=${category}`);
-          this.filteredDogProducts = res.data.results || [];
-          this.totalPages[category] = Math.ceil(this.filteredDogProducts.length / this.productsPerPage); // 更新总页数
+          const res = await axios.get(`http://127.0.0.1:8000/api/products/?animals__name=${this.categoryName}&categories__name=${category}`);
+          this.filteredProducts = res.data.results || [];
+          this.totalPages[category] = Math.ceil(this.filteredProducts.length / this.productsPerPage); // 更新总页数
           this.paginateProducts(category); // 加载当前页商品
         } catch (err) {
-          console.error('筛选狗狗商品失败', err);
-          this.filteredDogProducts = [];
+          console.error(`筛选 ${this.categoryName} 商品失败`, err);
+          this.filteredProducts = [];
         }
       },
       paginateProducts(category) {
         const start = (this.currentPage[category] - 1) * this.productsPerPage;
         const end = start + this.productsPerPage;
-        this.paginatedDogProducts[category] = this.filteredDogProducts.slice(start, end);
+        this.paginatedProducts[category] = this.filteredProducts.slice(start, end);
       },
       changePage(category, pageNumber) {
         if (pageNumber >= 1 && pageNumber <= this.totalPages[category]) {
@@ -119,7 +130,7 @@
   </script>
   
   <style scoped>
-  .dog-category-nav {
+  .category-nav {
     display: flex;
     gap: 12px;
     margin-bottom: 16px;

@@ -42,27 +42,32 @@ const routes = [
       {
         path: 'dog',
         name: 'dog',
-        component: () => import('@/views/categories/DogProducts.vue')
+        component: () => import('@/views/categories/AnimalProductList.vue'),
+        props: { categoryName: '狗' }  // 传递 categoryName 参数
       },
       {
         path: 'cat',
         name: 'cat',
-        component: () => import('@/views/categories/CatProducts.vue')
+        component: () => import('@/views/categories/AnimalProductList.vue'),
+        props: { categoryName: '猫' }  // 传递 categoryName 参数
       },
       {
         path: 'small',
         name: 'small',
-        component: () => import('@/views/categories/SmallProducts.vue') // 小宠商品展示
+        component: () => import('@/views/categories/AnimalProductList.vue'),
+        props: { categoryName: '小宠' }  // 传递 categoryName 参数
       },
       {
         path: 'aquatic',
         name: 'aquatic',
-        component: () => import('@/views/categories/AquaticProducts.vue') // 水族商品展示
+        component: () => import('@/views/categories/AnimalProductList.vue'),
+        props: { categoryName: '水族' }  // 传递 categoryName 参数
       },
       {
         path: 'reptile',
         name: 'reptile',
-        component: () => import('@/views/categories/ReptileProducts.vue') // 爬虫商品展示
+        component: () => import('@/views/categories/AnimalProductList.vue'),
+        props: { categoryName: '爬虫' }  // 传递 categoryName 参数
       }
       
       // ...其他分类同理
@@ -77,4 +82,3 @@ const router = createRouter({
 });
 
 export default router;
-
