@@ -2,26 +2,26 @@
     <div class="category-page">
       <h2>{{ categoryName }} 商品</h2>
   
-      <!-- 子类导航 -->
+      <!-- 子类导航：点击切换路由 -->
       <div class="category-nav">
-        <div 
-          v-for="category in categories" 
+        <router-link
+          v-for="category in categories"
           :key="category.value"
+          :to="`/category/${categoryPath}/${category.path}`"
           class="nav-item"
-          :class="{ active: activeCategory === category.value }"
-          @mouseenter="filterProducts(category.value)"
+          :class="{ active: isActiveCategory(category.path) }"
         >
           {{ category.label }}
-        </div>
+        </router-link>
       </div>
   
       <!-- 商品展示 -->
       <div class="product-list">
         <div 
-          v-for="product in paginatedProducts[activeCategory]" 
+          v-for="product in paginatedProducts" 
           :key="product.id" 
           class="product"
-          @click="openProductPage(product.id)"  
+          @click="openProductPage(product.id)"
         >
           <img :src="product.image" :alt="product.name" />
           <h3>{{ product.name }}</h3>
@@ -30,16 +30,10 @@
       </div>
   
       <!-- 分页 -->
-      <div class="pagination" v-if="paginatedProducts[activeCategory]">
-        <button 
-          @click="changePage(activeCategory, currentPage[activeCategory] - 1)" 
-          :disabled="currentPage[activeCategory] <= 1"
-        >上一页</button>
-        <span>第 {{ currentPage[activeCategory] }} 页</span>
-        <button 
-          @click="changePage(activeCategory, currentPage[activeCategory] + 1)" 
-          :disabled="currentPage[activeCategory] >= totalPages[activeCategory]"
-        >下一页</button>
+      <div class="pagination" v-if="totalPages > 1">
+        <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">上一页</button>
+        <span>第 {{ currentPage }} 页</span>
+        <button @click="changePage(currentPage + 1)" :disabled="currentPage >= totalPages">下一页</button>
       </div>
     </div>
   </template>
@@ -53,78 +47,94 @@
       categoryName: {
         type: String,
         required: true
+      },
+      subCategory: {
+        type: String,
+        required: false,
+        default: ''
       }
     },
     data() {
       return {
         categories: [
-          { label: '主粮', value: '主粮' },
-          { label: '零食', value: '零食' },
-          { label: '玩具', value: '玩具' }
+          { label: '主粮', value: '主粮', path: 'food' },
+          { label: '零食', value: '零食', path: 'snack' },
+          { label: '玩具', value: '玩具', path: 'toy' }
         ],
-        activeCategory: '主粮', // 默认选择第一个分类
-        products: [],
-        filteredProducts: [],
-        // 每个分类的分页状态
-        currentPage: {
-          '主粮': 1,
-          '零食': 1,
-          '玩具': 1
-        },
+        currentPage: 1,
         productsPerPage: 12,
-        totalPages: {
-          '主粮': 1,
-          '零食': 1,
-          '玩具': 1
-        },
-        paginatedProducts: {
-          '主粮': [],
-          '零食': [],
-          '玩具': []
-        }
+        products: [],
+        paginatedProducts: [],
+        totalPages: 1
       };
     },
-    mounted() {
-      this.fetchProducts();  // 加载初始商品数据
+    computed: {
+        categoryPath() {
+  const map = {
+    '狗': 'dog',
+    '猫': 'cat',
+    '小宠': 'small',
+    '水族': 'aquatic',
+    '爬虫': 'reptile',
+    '全部商品': 'all'
+  };
+  return map[this.categoryName] || this.categoryName.toLowerCase();
+}
+
+    },
+    watch: {
+      '$route.fullPath': {
+        handler() {
+          this.currentPage = 1;
+          this.fetchProducts();
+        },
+        immediate: true
+      }
     },
     methods: {
+      isActiveCategory(path) {
+        return this.$route.path.includes(`/${path}`);
+      },
       async fetchProducts() {
         try {
-          const res = await axios.get(`http://127.0.0.1:8000/api/products/?animals__name=${this.categoryName}`);
+          const categoryParam = this.subCategory || this.routeSubCategory();
+          const res = await axios.get(
+            `http://127.0.0.1:8000/api/products/?animals__name=${this.categoryName}&categories__name=${categoryParam}`
+          );
           this.products = res.data.results || [];
-          this.filteredProducts = this.products;
-          this.filterProducts(this.activeCategory); // 初始化分类商品
+          this.totalPages = Math.ceil(this.products.length / this.productsPerPage);
+          this.paginateProducts();
         } catch (err) {
           console.error(`获取 ${this.categoryName} 商品失败`, err);
+          this.products = [];
+          this.paginatedProducts = [];
         }
       },
-      // 打开商品详情页
-      openProductPage(productId) {
-        window.open(`/product/${productId}`, "_blank");
-      },
-      async filterProducts(category) {
-        this.activeCategory = category;
-        try {
-          const res = await axios.get(`http://127.0.0.1:8000/api/products/?animals__name=${this.categoryName}&categories__name=${category}`);
-          this.filteredProducts = res.data.results || [];
-          this.totalPages[category] = Math.ceil(this.filteredProducts.length / this.productsPerPage); // 更新总页数
-          this.paginateProducts(category); // 加载当前页商品
-        } catch (err) {
-          console.error(`筛选 ${this.categoryName} 商品失败`, err);
-          this.filteredProducts = [];
-        }
-      },
-      paginateProducts(category) {
-        const start = (this.currentPage[category] - 1) * this.productsPerPage;
+      paginateProducts() {
+        const start = (this.currentPage - 1) * this.productsPerPage;
         const end = start + this.productsPerPage;
-        this.paginatedProducts[category] = this.filteredProducts.slice(start, end);
+        this.paginatedProducts = this.products.slice(start, end);
       },
-      changePage(category, pageNumber) {
-        if (pageNumber >= 1 && pageNumber <= this.totalPages[category]) {
-          this.currentPage[category] = pageNumber;
-          this.paginateProducts(category); // 更新当前分类的商品
+      changePage(page) {
+        if (page >= 1 && page <= this.totalPages) {
+          this.currentPage = page;
+          this.paginateProducts();
         }
-      }
+      },
+      openProductPage(productId) {
+        window.open(`/product/${productId}`, '_blank');
+      },
+      routeSubCategory() {
+  const pathParts = this.$route.path.split('/');
+  const lastPart = pathParts[pathParts.length - 1];
+  const mapping = {
+    food: '主粮',
+    snack: '零食',
+    toy: '玩具'
+  };
+  return mapping[lastPart] || '';
+}
+
     }
   };
   </script>
@@ -141,7 +151,8 @@
     padding: 6px 12px;
     background-color: #eee;
     border-radius: 20px;
-    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
     transition: 0.3s;
   }
   

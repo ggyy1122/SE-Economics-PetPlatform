@@ -11,6 +11,41 @@ import ShopOrders from '@/views/ShopOrders.vue';    // 引入商城订单组件
 import PostDetail from '../views/PostDetail.vue';
 import CreatePost from '@/views/CreatePost.vue';
 import Community from '@/components/CommunitySection.vue'; // 引入社区页面
+import { generateAnimalCategoryRoutes } from '@/router/categoryGenerator.js'
+const animalCategoryConfigs = [
+  {
+    pathBase: 'dog',
+    categoryName: '狗',
+    subCategories: ['food', 'snack', 'toy'],
+    defaultSub: 'food'
+  },
+  {
+    pathBase: 'cat',
+    categoryName: '猫',
+    subCategories: ['food', 'snack', 'toy'],
+    defaultSub: 'food'
+  },
+  {
+    pathBase: 'small',
+    categoryName: '小宠',
+    subCategories: ['food', 'snack', 'toy'],
+    defaultSub: 'food'
+  },
+  {
+    pathBase: 'aquatic',
+    categoryName: '水族',
+    subCategories: ['food', 'snack', 'toy'],
+    defaultSub: 'food'
+  },
+  {
+    pathBase: 'reptile',
+    categoryName: '爬虫',
+    subCategories: ['food', 'snack', 'toy'],
+    defaultSub: 'food'
+  }
+];
+
+const animalCategoryRoutes = generateAnimalCategoryRoutes(animalCategoryConfigs);
 const routes = [
   { path: '/', name: 'HomePage', component: HomePage },
   { path: '/product/:id', component: ProductDetail, props: true },
@@ -37,42 +72,13 @@ const routes = [
       {
         path: 'all',
         name: 'all',
-        component: () => import('@/views/categories/AllProducts.vue') // 这是实际展示全部商品的组件
+        component: () => import('@/views/categories/AllProducts.vue') // 显示所有商品
       },
-      {
-        path: 'dog',
-        name: 'dog',
-        component: () => import('@/views/categories/AnimalProductList.vue'),
-        props: { categoryName: '狗' }  // 传递 categoryName 参数
-      },
-      {
-        path: 'cat',
-        name: 'cat',
-        component: () => import('@/views/categories/AnimalProductList.vue'),
-        props: { categoryName: '猫' }  // 传递 categoryName 参数
-      },
-      {
-        path: 'small',
-        name: 'small',
-        component: () => import('@/views/categories/AnimalProductList.vue'),
-        props: { categoryName: '小宠' }  // 传递 categoryName 参数
-      },
-      {
-        path: 'aquatic',
-        name: 'aquatic',
-        component: () => import('@/views/categories/AnimalProductList.vue'),
-        props: { categoryName: '水族' }  // 传递 categoryName 参数
-      },
-      {
-        path: 'reptile',
-        name: 'reptile',
-        component: () => import('@/views/categories/AnimalProductList.vue'),
-        props: { categoryName: '爬虫' }  // 传递 categoryName 参数
-      }
+      ...animalCategoryRoutes
       
-      // ...其他分类同理
     ]
-  },
+  }
+  
   
 ];
 

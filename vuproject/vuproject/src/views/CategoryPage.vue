@@ -24,12 +24,14 @@ import { ref } from 'vue'
 
 const categories = ref([
   { name: '全部商品', route: '/category/all' },
-  { name: '狗狗商品', route: '/category/dog' },
-  { name: '猫猫商品', route: '/category/cat' },
-  { name: '小宠商品', route: '/category/small' },
-  { name: '水族商品', route: '/category/aquatic' },
-  { name: '爬虫商品', route: '/category/reptile' }
-])
+  { name: '狗狗', route: '/category/dog' },
+  { name: '猫猫', route: '/category/cat' },
+  { name: '小宠', route: '/category/small' },
+  { name: '水族', route: '/category/aquatic' },
+  { name: '爬虫', route: '/category/reptile' }
+]);
+
+
 </script>
 
 <style scoped>
