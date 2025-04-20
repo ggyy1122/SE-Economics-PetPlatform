@@ -4,16 +4,12 @@
 
     <!-- 商品外框容器 -->
     <div class="product-container">
-      <div
+      <ProductCard
         v-for="product in paginatedProducts"
         :key="product.id"
-        class="product"
+        :product="product"
         @click="openProductPage(product.id)"
-      >
-        <img :src="product.image" :alt="product.name" />
-        <h3>{{ product.name }}</h3>
-        <p>￥{{ product.price }}</p>
-      </div>
+      />
     </div>
 
     <!-- 翻页按钮 -->
@@ -27,14 +23,18 @@
 
 <script>
 import axios from "axios";
+import ProductCard from "@/components/ProductCard.vue"; // 路径根据你项目结构调整
 
 export default {
   name: "AllProducts",
+  components: {
+    ProductCard
+  },
   data() {
     return {
       products: [],
       currentPage: 1,
-      pageSize: 28,  // 每页28个商品
+      pageSize: 25,
     };
   },
   computed: {
@@ -84,7 +84,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 100vh; /* 保证页面至少与屏幕一样高 */
+  min-height: 100vh;
 }
 
 .product-container {
@@ -93,40 +93,11 @@ export default {
   max-width: 100%;
   margin: 0 auto 20px auto;
   flex-grow: 1;
-  grid-template-columns: repeat(4, 1fr); /* 默认每行4个商品 */
+  grid-template-columns: repeat(5, 1fr); /* 固定每行 5 个 */
 }
 
-.product {
-  width: 200px;  /* 固定商品格宽度 */
-  height: 300px; /* 固定商品格高度 */
-  padding: 10px;
-  border-radius: 6px;
-  background-color: #fff;
-  transition: transform 0.3s;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
 
-.product img {
-  width: 100%;
-  height: 150px; /* 固定高度 */
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.product h3 {
-  font-size: 1em;
-  margin: 10px 0;
-  color: #333;
-}
-
-.product p {
-  color: #f60;
-  font-weight: bold;
-}
+/* ProductCard 自带尺寸的话就不需要额外定义 .product 的宽高了 */
 
 .pagination {
   margin-top: 20px;
