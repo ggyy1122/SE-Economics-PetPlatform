@@ -170,6 +170,12 @@ export default {
     goToAllCategory() {
       window.open(this.$router.resolve({ name: "all" }).href, "_blank");
     },
+    goToDogCategory() {
+      window.open(this.$router.resolve({ name: "dog" }).href, "_blank");
+    },
+    goToCatCategory() {
+      window.open(this.$router.resolve({ name: "cat" }).href, "_blank");
+    },
     goToCategory(animalType, category = null) {
       const categoryMapping = {
         "主粮": "food",
