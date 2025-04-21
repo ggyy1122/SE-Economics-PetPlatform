@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Person
 from django.views.decorators.csrf import csrf_exempt
-from .serializers import RegisterSerializer, LoginSerializer, PersonSerializer
+from .serializers import RegisterSerializer, LoginSerializer, PersonSerializer, PersonUpdateSerializer
 import json
 
 @api_view(["POST"])
@@ -66,3 +66,17 @@ def check_login_status(request):
         user = Person.objects.get(id=user_id)
         return Response({"message": f"用户已登录"})
     return Response({"message": "用户未登录"}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(["POST"])
+def update_user_info(request):
+    """更新当前登录用户的个人信息"""
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return Response({"error": "未登录"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    user = Person.objects.get(id=user_id)
+    serializer = PersonUpdateSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "信息更新成功"})
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
