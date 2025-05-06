@@ -196,7 +196,7 @@ export default {
 <style scoped>
 .product-detail {
   display: flex;
-  flex-direction: column; /* 修改为纵向排列 */
+  flex-direction: column; /* 纵向排列 */
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -209,22 +209,24 @@ export default {
   display: flex;
   max-width: 1000px;
   width: 100%;
-  margin-bottom: 20px; /* 加点间距让上下部分不紧挨 */
+  margin-bottom: 20px; /* 上下间距 */
 }
 
 .product-image {
-  flex: 2; /* 图片占据左侧 2/3 空间 */
+  flex: 2; /* 图片占 2/3 */
   margin-right: 20px;
+  position: relative;
 }
 
 .product-image img {
   width: 100%;
   height: auto;
   border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 图片阴影 */
 }
 
 .product-description {
-  flex: 1; /* 商品信息占据右侧 1/3 空间 */
+  flex: 1; /* 描述占 1/3 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -256,34 +258,39 @@ export default {
 
 .button-group {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .buy-button,
 .order-button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .buy-button {
   background-color: #ff4500;
   color: white;
+  box-shadow: 0 4px 8px rgba(255, 69, 0, 0.1);
 }
 
 .order-button {
   background-color: #ffcc00;
   color: white;
+  box-shadow: 0 4px 8px rgba(255, 204, 0, 0.1);
 }
 
 .buy-button:hover,
 .order-button:hover {
   opacity: 0.9;
+  transform: scale(1.05);
 }
 
-/* 收藏按钮样式 */
+/* 收藏按钮 */
 .favorite-button {
   border: none;
   padding: 10px 15px;
@@ -293,12 +300,12 @@ export default {
   font-weight: bold;
   transition: background-color 0.3s, transform 0.2s;
   color: white;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* 添加阴影 */
-  background-color: #ffb347; /* 未收藏状态（淡橙色） */
+  background-color: #ffb347; /* 未收藏状态 */
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2); /* 阴影 */
 }
 
 .favorite-button.active {
-  background-color: #ff7f00; /* 已收藏状态（深橙色） */
+  background-color: #ff7f00; /* 已收藏状态 */
 }
 
 .favorite-button:hover {
@@ -307,27 +314,80 @@ export default {
 }
 
 .add-comment {
-  margin-top: 20px;
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .add-comment textarea {
   width: 100%;
-  padding: 10px;
+  max-width: 600px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
   resize: vertical;
+  margin-bottom: 10px;
+  font-size: 16px;
 }
 
 .add-comment button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: #ff4500;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .add-comment button:hover {
   background-color: #e43e00;
+  transform: scale(1.05);
+}
+
+/* 评论区 */
+.product-comments {
+  width: 100%;
+  max-width: 1000px;
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-comments h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.product-comments ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.product-comments li {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.product-comments .comment-time {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+.product-comments p {
+  font-size: 14px;
+  color: #444;
+}
+
+.product-comments strong {
+  color: #e67e22;
 }
 </style>

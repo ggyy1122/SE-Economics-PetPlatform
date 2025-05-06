@@ -142,47 +142,85 @@ export default {
 
 <style scoped>
 .create-post {
-  padding: 30px;
-  max-width: 700px;
+  padding: 40px 20px;
+  max-width: 800px;
   margin: auto;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .post-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3748;
+  text-align: center;
 }
 
 .form-group label {
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
 }
 
 input,
 textarea,
 select {
   width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #2d3748;
+  transition: border 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #4c51bf;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+select {
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+}
+
+input[type="file"] {
+  padding: 6px;
 }
 
 .button-group {
   display: flex;
-  gap: 10px;
+  gap: 20px;
+  justify-content: center;
 }
 
 button {
-  padding: 12px 20px;
-  background-color: #007bff;
+  padding: 12px 30px;
+  background-color: #4c51bf;
   border: none;
   color: white;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #434190;
 }
 
 .cancel-btn {

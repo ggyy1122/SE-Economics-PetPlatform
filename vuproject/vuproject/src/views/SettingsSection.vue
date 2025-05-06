@@ -211,54 +211,99 @@ export default {
 <style scoped>
 .profile-update {
   max-width: 600px;
-  margin: auto;
-  padding: 30px;
+  margin: 40px auto;
+  padding: 40px;
+  background: #fdfdfd;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #2c3e50;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
 }
 
 input,
 select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #bbb;
-  border-radius: 5px;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   font-size: 16px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #409eff;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+  outline: none;
 }
 
 button {
-  padding: 12px 20px;
-  background-color: #007bff;
+  padding: 12px 24px;
+  background-color: #409eff;
   border: none;
   color: white;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #337ecc;
+}
+
+.logout {
+  background-color: #f56c6c;
+}
+
+.logout:hover {
+  background-color: #dd6161;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }
 
 .error-msg {
-  color: red;
+  color: #e74c3c;
   font-size: 14px;
-  margin-top: 5px;
+  margin-top: 6px;
+}
+
+.avatar-preview {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .avatar-preview img {
-  max-width: 100px;
-  max-height: 100px;
-  margin-top: 10px;
-  border-radius: 8px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 </style>
-
-  

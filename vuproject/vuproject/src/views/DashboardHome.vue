@@ -70,11 +70,11 @@ export default {
 <style scoped>
 .profile-display {
   max-width: 600px;
-  margin: 0 auto;
+  margin: 30px auto;
   padding: 30px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
@@ -86,31 +86,55 @@ export default {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 2px solid #ddd;
+  border: 3px solid #ececec;
   object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }
 
 h1.username {
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 30px;
+  font-weight: 600;
   margin-bottom: 15px;
-  color: #333;
+  color: #2d3748;
 }
 
 .info-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: left;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 label {
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 5px;
   color: #555;
 }
 
 p {
   font-size: 16px;
-  color: #777;
+  color: #888;
+}
+
+@media (max-width: 768px) {
+  .profile-display {
+    padding: 20px;
+  }
+
+  h1.username {
+    font-size: 26px;
+  }
+
+  .info-group {
+    font-size: 14px;
+  }
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
 }
 </style>
