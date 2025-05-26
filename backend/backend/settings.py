@@ -33,6 +33,10 @@ ALLOWED_HOSTS = []
 
 ###广告
 import os
+ALIPAY_APPID = '2021000149611133'  # 你的沙箱AppID
+ALIPAY_APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'keys/app_private_key.pem')
+ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'keys/alipay_public_key.pem')
+
 # 图片文件的存储路径
 MEDIA_URL = '/media/'  # 访问图片的 URL
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 图片存储的本地路径

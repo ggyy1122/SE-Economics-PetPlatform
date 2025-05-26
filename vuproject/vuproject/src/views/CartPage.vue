@@ -32,8 +32,11 @@
       <p>🈳 购物车是空的</p>
     </div>
 
-    <div v-if="cartItems.length > 0" class="total-bar">
-      🧾 总价: <span>{{ totalPrice }} 元</span>
+     <div v-if="cartItems.length > 0" class="checkout-section">
+      <div class="total-bar">
+        🧾 总价: <span>{{ totalPrice }} 元</span>
+      </div>
+      <button class="checkout-button" @click="handleCheckout">立即支付</button>
     </div>
   </div>
 </template>
@@ -50,6 +53,21 @@ export default {
     this.fetchCart();
   },
   methods: {
+    async handleCheckout() {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/pay/create_payment/?amount=${this.totalPrice}`,
+          {
+            method: "POST",
+            credentials: "include"
+          }
+        );
+        const data = await response.json();
+        window.open(data.pay_url, '_blank');
+      } catch (error) {
+        alert("创建支付订单失败");
+      }
+    },
     async fetchCart() {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/cart/cart/", {
@@ -102,7 +120,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .cart-page {
   max-width: 1000px;
@@ -167,7 +184,8 @@ input[type="number"] {
   margin-bottom: 16px;
 }
 
-button {
+/* 修改通用按钮样式，限定在cart-item内 */
+.cart-item button {
   background-color: #ff4d4f;
   color: white;
   border: none;
@@ -177,7 +195,7 @@ button {
   transition: background-color 0.2s ease;
 }
 
-button:hover {
+.cart-item button:hover {
   background-color: #d9363e;
 }
 
@@ -187,7 +205,7 @@ button:hover {
   color: #888;
 }
 
-.total-bar {
+.checkout-section {
   margin-top: 40px;
   padding: 20px;
   background: #fff6f0;
@@ -198,7 +216,23 @@ button:hover {
   text-align: right;
 }
 
-.total-bar span {
+.checkout-section span {
   color: #fa541c;
+}
+
+/* 确保支付按钮样式优先级高于通用样式 */
+.checkout-section .checkout-button {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.checkout-section .checkout-button:hover {
+  background-color: #40a9ff;
 }
 </style>

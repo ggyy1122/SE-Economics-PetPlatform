@@ -20,7 +20,7 @@
         <p class="stock">库存: {{ product.stock }} 件</p>
         <p class="description">{{ product.description }}</p>
         <div class="button-group">
-          <button class="buy-button">立即购买</button>
+          <button class="buy-button" @click="handleBuyNow">立即购买</button>
           <button
             class="order-button"
             @click="addToCart(product.id)"
@@ -94,6 +94,29 @@ export default {
     },
   },
   methods: {
+    async handleBuyNow() {
+      try {
+        // 调用支付API创建支付订单
+        const response = await axios.post(
+          `http://127.0.0.1:8000/api/pay/create_payment/?amount=${this.product.price}`,
+          { product_id: this.product.id },
+          { withCredentials: true }
+        );
+        
+        // 从响应中获取支付URL
+        const payUrl = response.data.pay_url;
+        
+        // 在新窗口打开支付页面
+        window.open(payUrl, '_blank');
+        
+        // 可以在这里添加支付状态检查逻辑
+        // this.checkPaymentStatus(response.data.out_trade_no);
+        
+      } catch (error) {
+        console.error("创建支付订单失败:", error);
+        alert("创建支付订单失败，请稍后重试");
+      }
+    },
     async fetchProductDetails(id) {
       try {
         const response = await axios.get(

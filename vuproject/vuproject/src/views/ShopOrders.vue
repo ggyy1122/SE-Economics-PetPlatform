@@ -32,8 +32,11 @@
       <p>🈳 购物车是空的</p>
     </div>
 
-    <div v-if="cartItems.length > 0" class="total-bar">
-      🧾 总价: <span>{{ totalPrice }} 元</span>
+    <div v-if="cartItems.length > 0" class="checkout-section">
+      <div class="total-bar">
+        🧾 总价: <span>{{ totalPrice }} 元</span>
+      </div>
+      <button class="checkout-button" @click="handleCheckout">立即支付</button>
     </div>
   </div>
 </template>
@@ -50,6 +53,36 @@ export default {
     this.fetchCart();
   },
   methods: {
+     async handleCheckout() {
+      if (this.totalPrice <= 0) {
+        alert("订单金额无效");
+        return;
+      }
+      
+      this.isProcessing = true;
+      
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/pay/create_payment/?amount=${this.totalPrice}`,
+          {
+            method: "POST",
+            credentials: "include"
+          }
+        );
+        const data = await response.json();
+        
+        if (data.pay_url) {
+          window.open(data.pay_url, '_blank');
+        } else {
+          alert("创建支付订单失败");
+        }
+      } catch (error) {
+        console.error("创建支付订单失败:", error);
+        alert("创建支付订单失败，请稍后重试");
+      } finally {
+        this.isProcessing = false;
+      }
+    },
     async fetchCart() {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/cart/cart/", {
@@ -167,7 +200,7 @@ input[type="number"] {
   margin-bottom: 16px;
 }
 
-button {
+.remove-button {
   background-color: #ff4d4f;
   color: white;
   border: none;
@@ -177,7 +210,7 @@ button {
   transition: background-color 0.2s ease;
 }
 
-button:hover {
+.remove-button:hover {
   background-color: #d9363e;
 }
 
@@ -187,18 +220,45 @@ button:hover {
   color: #888;
 }
 
-.total-bar {
+.checkout-section {
   margin-top: 40px;
   padding: 20px;
   background: #fff6f0;
   border-radius: 12px;
+  text-align: right;
+}
+
+.total-bar {
   font-size: 20px;
   color: #333;
   font-weight: bold;
-  text-align: right;
+  margin-bottom: 15px;
 }
 
 .total-bar span {
   color: #fa541c;
+}
+
+.checkout-button {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.checkout-button:hover {
+  background-color: #40a9ff;
+  transform: translateY(-2px);
+}
+
+.checkout-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
 }
 </style>
