@@ -7,4 +7,6 @@ urlpatterns = [
     path('add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('update/<int:product_id>/', views.update_cart_item, name='update_cart_item'),
     path('remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('clear_cart/', views.clear_cart, name='clear_cart'),  # 新增清空购物车路由
 ]
+

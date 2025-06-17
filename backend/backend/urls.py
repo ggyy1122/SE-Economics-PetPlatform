@@ -39,7 +39,7 @@ urlpatterns = [
     path('api/posts/', include('posts.urls')),    # 添加社区帖子模块的路由
     path('api/post_comment/', include('post_comment.urls')),  # 添加帖子评论区的路由
     path('api/pay/', include('pay.urls')),
-
+    path('api/order/', include('order.urls')),
 ]
 
 # 关键部分：让 Django 处理 media 文件

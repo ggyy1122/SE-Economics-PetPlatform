@@ -3,7 +3,7 @@ import HomePage from '@/views/HomePage.vue';
 import ProductDetail from '@/views/ProductDetail.vue';
 import ProfileSection from '@/components/ProfileSection.vue';
 import DashboardHome from '@/views/DashboardHome.vue';
-import FundsSection from '@/views/FundsSection.vue';
+import OrdersHisetory from '@/views/OrderHistory.vue';
 import MessagesSection from '@/views/MessageSection.vue';
 import SettingsSection from '@/views/SettingsSection.vue';
 import MyFavorites from '@/views/MyFavorites.vue';  // 引入我的收藏组件
@@ -60,7 +60,7 @@ const routes = [
       { path: 'home', component: DashboardHome },
       { path: 'favorites', component: MyFavorites },
       { path: 'orders', component: ShopOrders },
-      { path: 'funds', component: FundsSection },
+      { path: 'ordershistory', component: OrdersHisetory },
       { path: 'messages', component: MessagesSection },
       { path: 'settings', component: SettingsSection },
     ],

@@ -12,7 +12,7 @@
         </el-collapse-item>
       </el-collapse>
 
-      <router-link to="/dashboard/funds">资金管理</router-link>
+      <router-link to="/dashboard/ordershistory">历史订单</router-link>
       <router-link to="/dashboard/messages">消息管理</router-link>
       <router-link to="/dashboard/settings">个人设置</router-link>
     </nav>

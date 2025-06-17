@@ -94,29 +94,45 @@ export default {
     },
   },
   methods: {
-    async handleBuyNow() {
-      try {
-        // 调用支付API创建支付订单
-        const response = await axios.post(
-          `http://127.0.0.1:8000/api/pay/create_payment/?amount=${this.product.price}`,
-          { product_id: this.product.id },
-          { withCredentials: true }
-        );
-        
-        // 从响应中获取支付URL
-        const payUrl = response.data.pay_url;
-        
-        // 在新窗口打开支付页面
-        window.open(payUrl, '_blank');
-        
-        // 可以在这里添加支付状态检查逻辑
-        // this.checkPaymentStatus(response.data.out_trade_no);
-        
-      } catch (error) {
-        console.error("创建支付订单失败:", error);
-        alert("创建支付订单失败，请稍后重试");
-      }
-    },
+   async handleBuyNow() {
+  try {
+    // 第一步：调用后端创建订单
+    const createOrderResponse = await axios.post(
+      "http://127.0.0.1:8000/api/order/create_order/",
+      {
+        items: [
+          {
+            product_id: this.product.id,
+            quantity: 1
+          }
+        ]
+      },
+      { withCredentials: true }
+    );
+
+    const orderData = createOrderResponse.data;
+    const outTradeNo = orderData.out_trade_no;
+
+
+    // 第二步：调用支付接口，请求体中传参
+    const payResponse = await axios.post(
+  "http://127.0.0.1:8000/api/pay/create_payment/",
+  {
+    out_trade_no: outTradeNo
+  },
+  { withCredentials: true }
+);
+
+    const payUrl = payResponse.data.pay_url;
+
+    // 第三步：打开支付宝支付页面
+    window.open(payUrl, "_blank");
+
+  } catch (error) {
+    console.error("购买失败:", error);
+    alert("下单或支付失败，请稍后重试");
+  }
+},
     async fetchProductDetails(id) {
       try {
         const response = await axios.get(

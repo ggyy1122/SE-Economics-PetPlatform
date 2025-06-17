@@ -2,7 +2,10 @@
   <div class="cart-page">
     <h2>🛒 我的购物车</h2>
 
-    <div v-if="cartItems.length > 0" class="cart-grid">
+    <div
+      v-if="cartItems.length > 0"
+      class="cart-grid"
+    >
       <div
         v-for="item in cartItems"
         :key="item.product_id"
@@ -28,15 +31,24 @@
       </div>
     </div>
 
-    <div v-else class="empty-cart">
+    <div
+      v-else
+      class="empty-cart"
+    >
       <p>🈳 购物车是空的</p>
     </div>
 
-     <div v-if="cartItems.length > 0" class="checkout-section">
+    <div
+      v-if="cartItems.length > 0"
+      class="checkout-section"
+    >
       <div class="total-bar">
         🧾 总价: <span>{{ totalPrice }} 元</span>
       </div>
-      <button class="checkout-button" @click="handleCheckout">立即支付</button>
+      <button
+        class="checkout-button"
+        @click="handleCheckout"
+      >立即支付</button>
     </div>
   </div>
 </template>
@@ -53,19 +65,52 @@ export default {
     this.fetchCart();
   },
   methods: {
-    async handleCheckout() {
+    async handleCartCheckout() {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/pay/create_payment/?amount=${this.totalPrice}`,
-          {
-            method: "POST",
-            credentials: "include"
-          }
+        const orderItems = this.cartData.cart.map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+        }));
+
+        if (orderItems.length === 0) {
+          alert("购物车为空，无法下单");
+          return;
+        }
+
+        // 1. 创建订单，获得 out_trade_no
+        const createOrderResponse = await axios.post(
+          "http://127.0.0.1:8000/api/order/create_order/",
+          { items: orderItems },
+          { withCredentials: true }
         );
-        const data = await response.json();
-        window.open(data.pay_url, '_blank');
+
+        const orderData = createOrderResponse.data;
+        const outTradeNo = orderData.out_trade_no;
+
+        // 2. 调用支付接口，传递 out_trade_no 到请求体
+        const payResponse = await axios.post(
+          "http://127.0.0.1:8000/api/pay/create_payment/",
+          { out_trade_no: outTradeNo }, // 不要手动拼接 URL 参数
+          { withCredentials: true }
+        );
+
+        const payUrl = payResponse.data.pay_url;
+
+        // 3. 打开支付页面
+        window.open(payUrl, "_blank");
+
+        // 4. 这里可考虑清空购物车（或支付完成回调后清空）
+        await axios.post(
+          "http://127.0.0.1:8000/api/cart/clear_cart/",
+          {},
+          { withCredentials: true }
+        );
+
+        this.cartData.cart = [];
+        this.cartData.total_price = "0.00";
       } catch (error) {
-        alert("创建支付订单失败");
+        console.error("购物车购买失败:", error);
+        alert("下单或支付失败，请稍后重试");
       }
     },
     async fetchCart() {
@@ -128,7 +173,7 @@ export default {
   background: #fdfdfd;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .cart-page h2 {
@@ -175,7 +220,7 @@ input[type="number"] {
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .price {

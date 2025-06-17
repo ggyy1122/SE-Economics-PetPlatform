@@ -151,3 +151,21 @@ def remove_from_cart(request, product_id):
             'message': '商品已从购物车移除',
             'product': product.name
         })
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from .models import Person, Cart, CartItem
+
+@api_view(["POST"])
+def clear_cart(request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return JsonResponse({'error': '用户未登录'}, status=401)
+
+    user = get_object_or_404(Person, id=user_id)
+    cart = get_object_or_404(Cart, user=user)
+
+    # 删除当前购物车内所有商品项
+    CartItem.objects.filter(cart=cart).delete()
+
+    return JsonResponse({'message': '购物车已清空'})
